@@ -1,0 +1,119 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import ComparisonTable from '../components/ComparisonTable';
+
+const universities = await getCollection('universities');
+
+const tableData = universities.map(u => ({
+  slug: u.slug,
+  ...u.data,
+}));
+
+// Stats for hero
+const avgFemale = (universities.reduce((s, u) => s + u.data.gender_ratio_female_prof, 0) / universities.length).toFixed(1);
+const implemented = universities.filter(u => u.data.lgbtq_policy === '実施済み').length;
+const avgBF = (universities.reduce((s, u) => s + u.data.barrier_free_score, 0) / universities.length).toFixed(1);
+---
+
+<Layout title="比較ダッシュボード">
+  <!-- Hero -->
+  <section class="relative overflow-hidden" style="background: linear-gradient(160deg, #0f0f0f 60%, #161614 100%);">
+    <!-- Grid texture -->
+    <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none;" />
+
+    <div class="max-w-7xl mx-auto px-6 pt-20 pb-16 relative">
+      <!-- Label -->
+      <div class="flex items-center gap-2 mb-6">
+        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(232,255,90,0.8); text-transform: uppercase; letter-spacing: 0.12em; background: rgba(232,255,90,0.08); border: 1px solid rgba(232,255,90,0.2); padding: 4px 10px; border-radius: 99px;">
+          オープンデータ
+        </span>
+        <span style="font-size: 12px; color: rgba(255,255,255,0.25);">誰でもデータを更新できます</span>
+      </div>
+
+      <h1 class="font-display font-bold text-white leading-none mb-4" style="font-size: clamp(36px, 6vw, 72px); letter-spacing: -0.03em;">
+        大学のダイバーシティを<br/>
+        <span style="color: #e8ff5a;">可視化する</span>
+      </h1>
+      <p class="text-white/50 max-w-xl leading-relaxed mb-10" style="font-size: 16px;">
+        University Diversity Index（UDI）は、日本の大学のダイバーシティ推進状況を
+        オープンなデータで比較・追跡するコミュニティプロジェクトです。
+        GitHubを通じて誰でもデータの改善に貢献できます。
+      </p>
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-2xl">
+        {[
+          { label: '女性教授比率 平均', value: avgFemale + '%', sub: '掲載大学の平均値' },
+          { label: 'LGBTQ+施策 実施済み', value: implemented + '校', sub: `全${universities.length}校中` },
+          { label: 'BF スコア 平均', value: avgBF + ' / 5', sub: 'バリアフリー整備状況' },
+        ].map(stat => (
+          <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
+            <div style="font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700; color: #e8ff5a; letter-spacing: -0.02em;">{stat.value}</div>
+            <div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; font-weight: 500;">{stat.label}</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 2px; font-family: 'JetBrains Mono', monospace;">{stat.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Table section -->
+  <section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="font-display font-bold text-white text-2xl">比較テーブル</h2>
+        <p class="text-white/40 text-sm mt-1">列ヘッダーをクリックしてソート。行をクリックで詳細ページへ。</p>
+      </div>
+      <a
+        href="https://github.com/your-org/university-diversity-index/blob/main/CONTRIBUTING.md"
+        target="_blank"
+        rel="noopener noreferrer"
+        style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: rgba(232,255,90,0.1); border: 1px solid rgba(232,255,90,0.3); color: #e8ff5a; border-radius: 8px; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        データを追加・修正する
+      </a>
+    </div>
+
+    <ComparisonTable universities={tableData} client:load />
+  </section>
+
+  <!-- About section -->
+  <section id="about" class="max-w-7xl mx-auto px-6 py-16 border-t border-white/10">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px;">About UDI</div>
+        <h2 class="font-display font-bold text-white text-3xl mb-4" style="letter-spacing: -0.02em;">なぜこのサイトを<br/>作ったのか</h2>
+        <p class="text-white/50 leading-relaxed text-sm mb-4">
+          日本の大学のダイバーシティ推進状況は、各大学が個別に報告書を公開しているものの、
+          横断的に比較できる仕組みがありませんでした。
+        </p>
+        <p class="text-white/50 leading-relaxed text-sm">
+          UDIは、分散した情報を一箇所に集め、誰でも更新できるWiki形式で管理することで、
+          データの透明性と継続的な改善を実現します。
+        </p>
+      </div>
+      <div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px;">How to Contribute</div>
+        <div class="space-y-4">
+          {[
+            { step: '01', title: 'GitHubをフォーク', desc: 'リポジトリをフォークして、ローカルにクローンします。' },
+            { step: '02', title: 'Markdownを編集', desc: 'src/content/universities/ 内のファイルを編集、または新規追加します。' },
+            { step: '03', title: 'Pull Requestを送る', desc: '変更内容と情報源を明記してPRを作成。レビュー後マージされます。' },
+          ].map(item => (
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: rgba(232,255,90,0.4); line-height: 1; flex-shrink: 0; margin-top: 2px;">{item.step}</span>
+              <div>
+                <div style="color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500; margin-bottom: 2px;">{item.title}</div>
+                <div style="color: rgba(255,255,255,0.4); font-size: 13px; line-height: 1.5;">{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
