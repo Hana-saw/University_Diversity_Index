@@ -15,8 +15,8 @@ const { data, slug } = university;
 const { Content } = await university.render();
 
 // GitHub edit URL
-const GITHUB_OWNER = 'your-org';
-const GITHUB_REPO = 'university-diversity-index';
+const GITHUB_OWNER = 'Hana-saw';
+const GITHUB_REPO = 'University_Diversity_Index';
 const GITHUB_BRANCH = 'main';
 const editUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/edit/${GITHUB_BRANCH}/src/content/universities/${slug}.md`;
 const newIssueUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?title=データ修正: ${encodeURIComponent(data.name)}&body=${encodeURIComponent(`## 修正対象\n\n大学名: ${data.name}\nファイル: \`src/content/universities/${slug}.md\`\n\n## 修正内容\n\n<!-- 修正したい内容を具体的に記載してください -->\n\n## 情報源\n\n<!-- 参照した公式サイトや資料のURLを記載してください -->`)}`;
