@@ -1,6 +1,6 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const universities = await getCollection('universities');
@@ -11,9 +11,105 @@ export async function getStaticPaths() {
 }
 
 const { university } = Astro.props;
+const { data, slug } = university;
 const { Content } = await university.render();
+
+// GitHub 設定（ご自身のリポジトリ名に合わせて調整してください）
+const GITHUB_OWNER = 'Hana-saw';
+const GITHUB_REPO = 'University_Diversity_Index';
+const GITHUB_BRANCH = 'main';
+
+const editUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/edit/${GITHUB_BRANCH}/src/content/universities/${slug}.md`;
+const newIssueUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?title=${encodeURIComponent(`データ修正: ${data.name}`)}&body=${encodeURIComponent(`## 修正対象\n\n大学名: ${data.name}\nファイル: src/content/universities/${slug}.md`)}`;
+
+const LGBTQ_STYLE_MAP = {
+  '実施済み': { bg: 'rgba(22,163,74,0.12)', border: 'rgba(22,163,74,0.3)', text: '#4ade80', dot: '#16a34a' },
+  '検討中':   { bg: 'rgba(202,138,4,0.12)',  border: 'rgba(202,138,4,0.3)',  text: '#facc15', dot: '#ca8a04' },
+  '未着手':   { bg: 'rgba(220,38,38,0.12)',  border: 'rgba(220,38,38,0.3)',  text: '#f87171', dot: '#dc2626' },
+};
+// データがない場合のフォールバック
+const lgbtqStyle = LGBTQ_STYLE_MAP[data.lgbtq_policy] || LGBTQ_STYLE_MAP['未着手'];
 ---
-<Layout title={university.data.name}>
-  <h1>{university.data.name}</h1>
-  <Content />
+
+<Layout title={data.name} description={`${data.name}のダイバーシティ推進状況を確認・比較できます。`}>
+
+  <div class="max-w-5xl mx-auto px-6 pt-8">
+    <nav style="font-size: 13px; color: rgba(255,255,255,0.3); font-family: monospace;">
+      <a href="/" style="color: rgba(255,255,255,0.4); text-decoration: none;">UDI</a>
+      <span style="margin: 0 8px; opacity: 0.4;">/</span>
+      <span style="color: rgba(255,255,255,0.6);">{data.name}</span>
+    </nav>
+  </div>
+
+  <section class="max-w-5xl mx-auto px-6 pt-8 pb-12">
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+      <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+          <span style="font-size: 12px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.07); padding: 3px 10px; border-radius: 4px;">{data.prefecture}</span>
+          <span style="font-size: 12px; color: rgba(255,255,255,0.3);">{data.region}</span>
+        </div>
+        <h1 class="font-bold text-white" style="font-size: clamp(28px, 4vw, 48px); letter-spacing: -0.03em; line-height: 1.1;">
+          {data.name}
+        </h1>
+        <a href={data.official_url} target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 5px; margin-top: 10px; font-size: 13px; color: rgba(255,255,255,0.35); text-decoration: none;">
+          🔗 {data.official_url?.replace('https://', '')}
+        </a>
+      </div>
+
+      <div style="flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; min-width: 220px;">
+        <a href={editUrl} target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; padding: 14px; background: #e8ff5a; color: #0f0f0f; border-radius: 10px; font-weight: 700; text-decoration: none;">
+          GitHubで編集・提案する
+        </a>
+        <a href={newIssueUrl} target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); border-radius: 10px; font-size: 13px; text-decoration: none;">
+          修正を提案（Issue）
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-5xl mx-auto px-6 pb-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px;">
+        <div style="font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 12px;">女性教授比率</div>
+        <div style="font-size: 52px; font-weight: 800; color: #e8ff5a; line-height: 1;">
+          {data.gender_ratio_female_prof}<span style="font-size: 22px; opacity: 0.6;">%</span>
+        </div>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px;">
+        <div style="font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 12px;">LGBTQ+施策</div>
+        <div style={`display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 99px; background: ${lgbtqStyle.bg}; border: 1px solid ${lgbtqStyle.border}; color: ${lgbtqStyle.text}; font-weight: 600; font-size: 18px;`}>
+          <span style={`width: 8px; height: 8px; border-radius: 50%; background: ${lgbtqStyle.dot};`}></span>
+          {data.lgbtq_policy}
+        </div>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 24px;">
+        <div style="font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 12px;">バリアフリー</div>
+        <div style="font-size: 52px; font-weight: 800; color: #e8e8e6;">{data.barrier_free_score}<span style="font-size: 22px; opacity: 0.3;">/5</span></div>
+      </div>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 32px;">
+      <article class="prose-udi">
+        <Content />
+      </article>
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .prose-udi :global(h2) {
+    font-size: 1.5rem;
+    color: white;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 0.5rem;
+  }
+  .prose-udi :global(p) {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.8;
+    margin-bottom: 1.2rem;
+  }
+</style>
