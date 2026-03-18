@@ -1,0 +1,2 @@
+# University_Diversity_Index
+大学のダイバーシティ推進状況を可視化・比較し、Wiki形式で更新できるプラットフォーム
