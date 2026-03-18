@@ -1,10 +1,10 @@
 ---
-name: 京都大学
-name_en: Kyoto University
-region: 関西
-prefecture: 京都府
+name: "京都大学"
+name_en: "Kyoto University"
+region: "関西"
+prefecture: "京都府"
 gender_ratio_female_prof: 14.2
-lgbtq_policy: 検討中
+lgbtq_policy: "検討中"
 lgbtq_policy_detail: |
   2022年にLGBTQ+ワーキンググループを設置し、実態調査を実施。
   調査結果をもとに包括的な支援指針の策定を進めているが、
@@ -15,10 +15,10 @@ barrier_free_detail: |
   新棟はUDデザインを採用。障害学生修学支援ルームを設置し、
   個別支援計画を立案・実施している。移動支援の改善が課題。
 international_ratio: 9.8
-official_url: https://www.kyoto-u.ac.jp
-github_id: kyoto-university
+official_url: "https://www.kyoto-u.ac.jp"
+github_id: "kyoto-university"
 last_updated: "2024-02-28"
-data_source: 京都大学 男女共同参画推進センター 2023年次報告
+data_source: "京都大学 男女共同参画推進センター 2023年次報告"
 ---
 
 ## 概要

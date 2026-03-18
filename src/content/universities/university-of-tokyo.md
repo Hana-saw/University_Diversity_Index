@@ -1,10 +1,10 @@
 ---
-name: 東京大学
-name_en: University of Tokyo
-region: 関東
-prefecture: 東京都
+name: "東京大学"
+name_en: "University of Tokyo"
+region: "関東"
+prefecture: "東京都"
 gender_ratio_female_prof: 16.7
-lgbtq_policy: 実施済み
+lgbtq_policy: "実施済み"
 lgbtq_policy_detail: |
   2020年にSOGI（性的指向・性自認）に関するハラスメント防止ガイドラインを制定。
   学生・教職員向けの相談窓口を設置し、同性パートナーシップの福利厚生適用も開始。
@@ -15,10 +15,10 @@ barrier_free_detail: |
   エレベーター・スロープ整備率90%以上。障害学生支援室が専門スタッフにより運営。
   一部の古い建物はアクセスに課題あり。
 international_ratio: 12.3
-official_url: https://www.u-tokyo.ac.jp
-github_id: university-of-tokyo
+official_url: "https://www.u-tokyo.ac.jp"
+github_id: "university-of-tokyo"
 last_updated: "2024-03-15"
-data_source: 東京大学 男女共同参画推進室 2023年度報告書
+data_source: "東京大学 男女共同参画推進室 2023年度報告書"
 ---
 
 ## 概要
